@@ -11,12 +11,9 @@ import page from 'page';
  * Internal dependencies
  */
 import ImporterActionButton from './action-button';
-import { resetImport } from 'calypso/lib/importer/actions';
+import { resetImport } from 'calypso/state/imports/actions';
 import { recordTracksEvent } from 'calypso/state/analytics/actions';
-import {
-	clearImportingFromSignupFlow,
-	setImportOriginSiteDetails,
-} from 'calypso/state/importer-nux/actions';
+import { clearImportingFromSignupFlow } from 'calypso/state/importer-nux/actions';
 import { isImportingFromSignupFlow } from 'calypso/state/importer-nux/temp-selectors';
 import { getSelectedSiteSlug } from 'calypso/state/ui/selectors';
 
@@ -61,7 +58,7 @@ export class DoneButton extends React.PureComponent {
 		 * Calling `resetImport` in unmount defers until the redirect is in progress
 		 * Otherwise, you see the importers list during the route change
 		 */
-		resetImport( siteId, importerId );
+		this.props.resetImport( siteId, importerId );
 
 		if ( isSignup ) {
 			this.props.clearImportingFromSignupFlow();
@@ -84,5 +81,5 @@ export default connect(
 		isSignup: isImportingFromSignupFlow( state ),
 		siteSlug: getSelectedSiteSlug( state ),
 	} ),
-	{ clearImportingFromSignupFlow, setImportOriginSiteDetails, recordTracksEvent }
+	{ clearImportingFromSignupFlow, recordTracksEvent, resetImport }
 )( localize( DoneButton ) );
