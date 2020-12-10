@@ -24,12 +24,35 @@ import {
 	validateTotal,
 } from '../lib/validation';
 import TransactionStatusHandler from './transaction-status-handler';
-import { CheckoutProviderProps, FormStatus, PaymentMethod } from '../types';
+import { LineItem, CheckoutProviderProps, FormStatus, PaymentMethod } from '../types';
 
 const debug = debugFactory( 'composite-checkout:checkout-provider' );
 
-export function CheckoutProvider( props: CheckoutProviderProps ): JSX.Element {
-	const {
+const emptyTotal: LineItem = {
+	id: 'total',
+	type: 'total',
+	amount: { value: 0, displayValue: '0', currency: 'USD' },
+	label: 'Total',
+};
+
+export function CheckoutProvider( {
+	total = emptyTotal,
+	items = [],
+	onPaymentComplete,
+	showErrorMessage,
+	showInfoMessage,
+	showSuccessMessage,
+	redirectToUrl,
+	theme,
+	paymentMethods,
+	paymentProcessors,
+	registry,
+	onEvent,
+	isLoading,
+	isValidating,
+	children,
+}: CheckoutProviderProps ): JSX.Element {
+	const propsToValidate = {
 		total,
 		items,
 		onPaymentComplete,
@@ -45,7 +68,7 @@ export function CheckoutProvider( props: CheckoutProviderProps ): JSX.Element {
 		isLoading,
 		isValidating,
 		children,
-	} = props;
+	};
 	const [ paymentMethodId, setPaymentMethodId ] = useState< string | null >(
 		paymentMethods?.length ? paymentMethods[ 0 ].id : null
 	);
@@ -113,7 +136,7 @@ export function CheckoutProvider( props: CheckoutProviderProps ): JSX.Element {
 	);
 	return (
 		<CheckoutErrorBoundary errorMessage={ errorMessage } onError={ onError }>
-			<CheckoutProviderPropValidator propsToValidate={ props } />
+			<CheckoutProviderPropValidator propsToValidate={ propsToValidate } />
 			<ThemeProvider theme={ theme || defaultTheme }>
 				<RegistryProvider value={ registryRef.current }>
 					<LineItemsProvider items={ items } total={ total }>
