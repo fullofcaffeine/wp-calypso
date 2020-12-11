@@ -44,6 +44,7 @@ import Gridicon from 'calypso/components/gridicon';
 import { isMonthly } from 'calypso/lib/plans/constants';
 import { isFetchingStoredCards, getStoredCards } from 'calypso/state/stored-cards/selectors';
 import getThankYouPageUrl from 'calypso/my-sites/checkout/composite-checkout/hooks/use-get-thank-you-url/get-thank-you-page-url';
+import { extractStoredCardMetaValue } from './purchase-modal/util';
 
 /**
  * Style dependencies
@@ -229,6 +230,14 @@ export class UpsellNudge extends React.Component {
 		if ( this.isEligibleForOneClickUpsell( buttonAction ) ) {
 			this.setState( {
 				showPurchaseModal: true,
+			} );
+			const storedCard = this.props.cards[ 0 ];
+			const countryCode = extractStoredCardMetaValue( storedCard, 'country_code' );
+			const postalCode = extractStoredCardMetaValue( storedCard, 'card_zip' );
+			this.props.shoppingCartManager.updateLocation( {
+				countryCode,
+				postalCode,
+				subdivisionCode: null,
 			} );
 			this.props.shoppingCartManager.replaceProductsInCart( [ this.props.product ] );
 			return;
