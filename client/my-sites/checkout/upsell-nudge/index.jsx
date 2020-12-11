@@ -39,7 +39,7 @@ import { ConciergeQuickstartSession } from './concierge-quickstart-session';
 import { ConciergeSupportSession } from './concierge-support-session';
 import { PlanUpgradeUpsell } from './plan-upgrade-upsell';
 import getUpgradePlanSlugFromPath from 'calypso/state/selectors/get-upgrade-plan-slug-from-path';
-import { PurchaseModal } from './purchase-modal';
+import PurchaseModal from './purchase-modal';
 import Gridicon from 'calypso/components/gridicon';
 import { isMonthly } from 'calypso/lib/plans/constants';
 import { isFetchingStoredCards, getStoredCards } from 'calypso/state/stored-cards/selectors';
