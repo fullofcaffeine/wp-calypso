@@ -91,6 +91,7 @@ export default function useCreatePaymentCompleteCallback( {
 		( { paymentMethodId, transactionLastResponse }: PaymentCompleteCallbackArguments ): void => {
 			debug( 'payment completed successfully' );
 			const transactionResult = normalizeTransactionResponse( transactionLastResponse );
+			const hideNudge = shouldHideUpsellNudges( { isComingFromUpsell, transactionLastResponse } );
 			const getThankYouPageUrlArguments = {
 				siteSlug: siteSlug || undefined,
 				adminUrl,
@@ -104,7 +105,7 @@ export default function useCreatePaymentCompleteCallback( {
 				productAliasFromUrl,
 				isEligibleForSignupDestinationResult,
 				shouldShowOneClickTreatment,
-				hideNudge: !! isComingFromUpsell,
+				hideNudge,
 				isInEditor,
 				previousRoute,
 			};
@@ -338,4 +339,23 @@ function recordPaymentCompleteAnalytics( {
 				) || '',
 		} )
 	);
+}
+
+function shouldHideUpsellNudges( {
+	isComingFromUpsell,
+	transactionLastResponse,
+}: {
+	isComingFromUpsell?: boolean;
+	transactionLastResponse: unknown;
+} ): boolean {
+	if ( isComingFromUpsell ) {
+		return true;
+	}
+	if (
+		transactionLastResponse &&
+		( transactionLastResponse as { isComingFromUpsell: boolean } ).isComingFromUpsell
+	) {
+		return true;
+	}
+	return false;
 }
