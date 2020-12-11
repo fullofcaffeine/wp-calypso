@@ -10,7 +10,7 @@ import { createStripePaymentMethod } from '@automattic/calypso-stripe';
  * Internal dependencies
  */
 import wp from 'calypso/lib/wp';
-import { createTransactionEndpointRequestPayloadFromLineItems } from './types/transaction-endpoint';
+import { createTransactionEndpointRequestPayloadFromLineItems } from './lib/translate-cart';
 import { createPayPalExpressEndpointRequestPayloadFromLineItems } from './types/paypal-express';
 import { translateCheckoutPaymentMethodToWpcomPaymentMethod } from './lib/translate-payment-method-names';
 import { getSavedVariations } from 'calypso/lib/abtest';
