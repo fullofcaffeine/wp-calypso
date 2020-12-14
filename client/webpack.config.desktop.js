@@ -99,11 +99,11 @@ module.exports = {
 		new webpack.DefinePlugin( { 'global.GENTLY': false } ),
 		new webpack.NormalModuleReplacementPlugin(
 			/^my-sites[/\\]themes[/\\]theme-upload$/,
-			'components/empty-component'
+			'calypso/components/empty-component'
 		), // Depends on BOM
 		new webpack.NormalModuleReplacementPlugin(
 			/^calypso[/\\]my-sites[/\\]themes[/\\]theme-upload$/,
-			'components/empty-component'
+			'calypso/components/empty-component'
 		), // Depends on BOM
 		new webpack.IgnorePlugin( /^\.\/locale$/, /moment$/ ), // server doesn't use moment locales
 	],
