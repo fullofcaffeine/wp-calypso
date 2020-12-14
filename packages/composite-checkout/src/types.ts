@@ -237,3 +237,19 @@ export interface StripePaymentRequestHandlerEvent {
 	};
 	complete: () => void;
 }
+
+export interface CheckoutStepsProps {
+	children?: React.ReactNode;
+	areStepsActive?: boolean;
+	onStepNumberChange?: OnStepNumberChange;
+}
+
+export type OnStepNumberChange = ( {
+	stepNumber,
+	previousStepNumber,
+}: {
+	stepNumber: number | null;
+	previousStepNumber: number | null;
+} ) => void;
+
+export type IsCompleteCallback = () => boolean | Promise< boolean >;
