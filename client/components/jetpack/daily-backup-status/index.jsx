@@ -29,12 +29,14 @@ import NoBackupsYet from './status-card/no-backups-yet';
  */
 import './style.scss';
 
+const siteHasRealtimeBackups = ( state, siteId ) => {
+	const capabilities = getRewindCapabilities( state, siteId );
+	return isArray( capabilities ) && capabilities.includes( 'backup-realtime' );
+};
+
 const DailyBackupStatus = ( { selectedDate, lastBackupDate, backup, deltas } ) => {
 	const siteId = useSelector( getSelectedSiteId );
-	const hasRealtimeBackups = useSelector( ( state ) => {
-		const capabilities = getRewindCapabilities( state, siteId );
-		return isArray( capabilities ) && capabilities.includes( 'backup-realtime' );
-	} );
+	const hasRealtimeBackups = useSelector( ( state ) => siteHasRealtimeBackups( state, siteId ) );
 
 	const moment = useLocalizedMoment();
 	const today = useDateWithOffset( moment() );
