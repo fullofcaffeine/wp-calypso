@@ -7,11 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 /**
  * Internal dependencies
  */
+import useDateWithOffset from 'calypso/lib/jetpack/hooks/use-date-with-offset';
 import { useLocalizedMoment } from 'calypso/components/localized-moment';
 import { recordTracksEvent } from 'calypso/state/analytics/actions/record';
 import { getSelectedSiteId, getSelectedSiteSlug } from 'calypso/state/ui/selectors';
 import BackupDatePicker from 'calypso/components/jetpack/backup-date-picker';
-import { useDateWithOffset, useFirstMatchingBackupAttempt } from './hooks';
+import { useFirstMatchingBackupAttempt } from './hooks';
 
 const useFirstKnownBackupAttempt = ( siteId ) => {
 	return useFirstMatchingBackupAttempt( siteId, { sortOrder: 'asc' } );
