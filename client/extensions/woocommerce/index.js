@@ -194,11 +194,11 @@ function getAnalyticsPath( path, params ) {
 	}
 
 	if ( '/store/settings/email/:site/:setup?' === path ) {
-		return !! params.setup ? '/store/settings/email/:site/:setup' : '/store/settings/email/:site';
+		return params.setup ? '/store/settings/email/:site/:setup' : '/store/settings/email/:site';
 	}
 
 	if ( '/store/settings/shipping/zone/:site/:zone?' === path ) {
-		return !! params.zone
+		return params.zone
 			? '/store/settings/shipping/zone/:site/:zone'
 			: '/store/settings/shipping/zone/:site';
 	}
