@@ -12,19 +12,31 @@ import languages from '@automattic/languages';
  * Internal dependencies
  */
 import { ChangeLocaleContextConsumer } from '../../components/locale-context';
+import { Step, usePath } from '../../path';
+import type { StepNameType } from '../../path';
 
 /**
  * Style dependencies
  */
 import './style.scss';
 
-const LanguageStep: React.FunctionComponent = () => {
+interface Props {
+	previousStep?: StepNameType;
+}
+
+const LanguageStep: React.FunctionComponent< Props > = ( { previousStep } ) => {
 	const { __ } = useI18n();
 
-	const history = useHistory();
+	// keep a static reference to the previous step
+	const staticPreviousStep = React.useRef( previousStep );
 
-	const goBack = () => {
-		history.goBack();
+	const history = useHistory();
+	const makePath = usePath();
+
+	const goBack = ( lang = '' ) => {
+		staticPreviousStep.current
+			? history.replace( makePath( Step[ staticPreviousStep.current ], lang ) )
+			: history.goBack();
 	};
 
 	return (
@@ -34,7 +46,7 @@ const LanguageStep: React.FunctionComponent = () => {
 					<div className="language__heading">
 						<Title>{ __( 'Select your site language' ) }</Title>
 						<ActionButtons>
-							<BackButton onClick={ goBack } />
+							<BackButton onClick={ () => goBack() } />
 						</ActionButtons>
 					</div>
 					<LanguagePicker
@@ -42,7 +54,7 @@ const LanguageStep: React.FunctionComponent = () => {
 						languages={ languages }
 						onSelectLanguage={ ( language ) => {
 							changeLocale( language.langSlug );
-							goBack();
+							goBack( language.langSlug );
 						} }
 					/>
 				</div>

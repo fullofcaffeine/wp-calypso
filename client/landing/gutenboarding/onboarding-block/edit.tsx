@@ -2,27 +2,28 @@
  * External dependencies
  */
 import * as React from 'react';
-import { Redirect, Switch, Route, useHistory, useLocation } from 'react-router-dom';
-import type { BlockEditProps } from '@wordpress/blocks';
+import { Redirect, Switch, Route, useLocation } from 'react-router-dom';
 import { useSelect } from '@wordpress/data';
-import { useLocale } from '@automattic/i18n-utils';
+import type { BlockEditProps } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
  */
 import { STORE_KEY } from '../stores/onboard';
 import { SITE_STORE } from '../stores/site';
+import { Step, useCurrentStep, usePath, useNewQueryParam } from '../path';
+import { usePrevious } from '../hooks/use-previous';
 import DesignSelector from './design-selector';
 import CreateSite from './create-site';
 import CreateSiteError from './create-site-error';
-import type { Attributes } from './types';
-import { Step, usePath, useNewQueryParam, useCurrentStep, useLangRouteParam } from '../path';
 import AcquireIntent from './acquire-intent';
 import StylePreview from './style-preview';
 import Features from './features';
 import Plans from './plans';
 import Domains from './domains';
 import Language from './language';
+
+import type { Attributes } from './types';
 
 import './colors.scss';
 import './style.scss';
@@ -35,22 +36,14 @@ const OnboardingEdit: React.FunctionComponent< BlockEditProps< Attributes > > = 
 	const shouldTriggerCreate = useNewQueryParam();
 
 	const makePath = usePath();
-	const locale = useLocale();
-	const history = useHistory();
 	const currentStep = useCurrentStep();
-	const langRouteParam = useLangRouteParam();
+	const previousStep = usePrevious( currentStep );
 
 	const { pathname } = useLocation();
 
 	React.useEffect( () => {
 		setTimeout( () => window.scrollTo( 0, 0 ), 0 );
 	}, [ pathname ] );
-
-	React.useEffect( () => {
-		if ( langRouteParam && langRouteParam !== locale ) {
-			history.replace( makePath( Step[ currentStep ], locale ) );
-		}
-	}, [ langRouteParam, locale, pathname, history, currentStep, makePath ] );
 
 	const canUseDesignStep = React.useCallback( (): boolean => {
 		return !! siteTitle;
@@ -130,7 +123,7 @@ const OnboardingEdit: React.FunctionComponent< BlockEditProps< Attributes > > = 
 				</Route>
 
 				<Route path={ makePath( Step.LanguageModal ) }>
-					<Language />
+					<Language previousStep={ previousStep } />
 				</Route>
 
 				<Route path={ makePath( Step.CreateSite ) }>{ createSiteOrError() }</Route>
