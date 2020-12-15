@@ -4,7 +4,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { isArray } from 'lodash';
 
 /**
  * Internal dependencies
@@ -17,29 +16,32 @@ import {
 } from 'calypso/lib/jetpack/backup-utils';
 import { useLocalizedMoment } from 'calypso/components/localized-moment';
 import getSelectedSiteId from 'calypso/state/ui/selectors/get-selected-site-id';
-import getRewindCapabilities from 'calypso/state/selectors/get-rewind-capabilities';
+import QueryRewindBackups from 'calypso/components/data/query-rewind-backups';
 import BackupFailed from './status-card/backup-failed';
+import BackupInProgress from './status-card/backup-in-progress';
 import BackupScheduled from './status-card/backup-scheduled';
 import BackupSuccessful from './status-card/backup-successful';
 import NoBackupsOnSelectedDate from './status-card/no-backups-on-selected-date';
 import NoBackupsYet from './status-card/no-backups-yet';
+import { siteHasBackupInProgress, siteHasRealtimeBackups } from './selectors';
 
 /**
  * Style dependencies
  */
 import './style.scss';
 
-const siteHasRealtimeBackups = ( state, siteId ) => {
-	const capabilities = getRewindCapabilities( state, siteId );
-	return isArray( capabilities ) && capabilities.includes( 'backup-realtime' );
-};
-
 const DailyBackupStatus = ( { selectedDate, lastBackupDate, backup, deltas } ) => {
 	const siteId = useSelector( getSelectedSiteId );
-	const hasRealtimeBackups = useSelector( ( state ) => siteHasRealtimeBackups( state, siteId ) );
 
 	const moment = useLocalizedMoment();
 	const today = useDateWithOffset( moment() );
+
+	const hasRealtimeBackups = useSelector( ( state ) => siteHasRealtimeBackups( state, siteId ) );
+	const backupInProgress = useSelector( ( state ) => siteHasBackupInProgress( state, siteId ) );
+
+	if ( selectedDate.isSame( today, 'day' ) && backupInProgress ) {
+		return <BackupInProgress lastBackupDate={ lastBackupDate } />;
+	}
 
 	if ( backup ) {
 		const isSuccessful = hasRealtimeBackups ? isSuccessfulRealtimeBackup : isSuccessfulDailyBackup;
@@ -70,10 +72,15 @@ DailyBackupStatus.propTypes = {
 	deltas: PropTypes.object,
 };
 
-const Wrapper = ( props ) => (
-	<Card className="daily-backup-status">
-		<DailyBackupStatus { ...props } />
-	</Card>
-);
+const Wrapper = ( props ) => {
+	const siteId = useSelector( getSelectedSiteId );
+
+	return (
+		<Card className="daily-backup-status">
+			<QueryRewindBackups siteId={ siteId } />
+			<DailyBackupStatus { ...props } />
+		</Card>
+	);
+};
 
 export default Wrapper;

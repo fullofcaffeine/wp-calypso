@@ -17,7 +17,7 @@ import getSelectedSiteId from 'calypso/state/ui/selectors/get-selected-site-id';
 // I don't want to disturb existing behavior, but we may want to come back later
 // and DRY up this bit of code.
 const useDateWithOffset = (
-	date: Moment,
+	date: Moment | undefined | null,
 	{ shouldExecute = true, keepLocalTime = false } = {}
 ): Moment | undefined => {
 	const siteId = useSelector( getSelectedSiteId );
@@ -30,7 +30,7 @@ const useDateWithOffset = (
 	);
 
 	const dateWithOffset = useMemo(
-		() => applySiteOffset( date, { timezone, gmtOffset, keepLocalTime } ),
+		() => ( date ? applySiteOffset( date, { timezone, gmtOffset, keepLocalTime } ) : undefined ),
 		[ date, timezone, gmtOffset, keepLocalTime ]
 	);
 

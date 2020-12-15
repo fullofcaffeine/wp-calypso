@@ -13,7 +13,7 @@ import { isArray } from 'lodash';
  */
 import { isEnabled } from 'calypso/config';
 import { useLocalizedMoment } from 'calypso/components/localized-moment';
-import { useDateWithOffset } from 'calypso/lib/jetpack/hooks';
+import useDateWithOffset from 'calypso/lib/jetpack/hooks/use-date-with-offset';
 import isJetpackCloud from 'calypso/lib/jetpack/is-jetpack-cloud';
 import { INDEX_FORMAT } from 'calypso/lib/jetpack/backup-utils';
 import getActivityLogFilter from 'calypso/state/selectors/get-activity-log-filter';
